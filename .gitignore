@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Next.js
+apps/web/.next/
+apps/web/out/
+
+# Build output
+apps/api/dist/
+*.tsbuildinfo
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+apps/api/.env
+apps/web/.env.local
+
+# Local database
+apps/api/prisma/dev.db
+apps/api/prisma/dev.db-journal
+*.db-journal
+
+# Logs & OS
+*.log
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Prisma
+apps/api/node_modules/.prisma/
+
+# Uploads / cache
+apps/web/.next/cache/

@@ -1,0 +1,211 @@
+@import './public.css';
+
+:root {
+  --app-touch-min: 44px;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: #f7f8fb;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* —— Admin / donor app shell —— */
+.app-shell {
+  background: #f7f8fb;
+}
+
+.app-main {
+  min-width: 0;
+}
+
+.app-content {
+  padding: 1rem;
+}
+
+@media (min-width: 992px) {
+  .app-content {
+    padding: 1.25rem 1.5rem;
+  }
+}
+
+.admin-topbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+}
+
+.admin-topbar-brand {
+  font-weight: 700;
+  color: #0b5ed7;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-topbar-user {
+  max-width: 38%;
+}
+
+.admin-offcanvas {
+  width: min(300px, 88vw);
+}
+
+.admin-offcanvas .nav-link {
+  padding: 0.65rem 1rem;
+  border-radius: 12px;
+}
+
+.sidebar {
+  width: 280px;
+  min-height: 100vh;
+  flex-shrink: 0;
+}
+
+.nav-pills .nav-link {
+  border-radius: 12px;
+}
+
+.nav-pills .nav-link.active {
+  background: #0b5ed7;
+}
+
+/* Page headers with actions */
+.page-toolbar {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 576px) {
+  .page-toolbar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.page-toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.page-toolbar-actions .btn {
+  flex: 1 1 auto;
+  min-height: var(--app-touch-min);
+}
+
+@media (min-width: 576px) {
+  .page-toolbar-actions .btn {
+    flex: 0 1 auto;
+  }
+}
+
+/* Tabs scroll on small screens */
+.nav-tabs-scroll {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.nav-tabs-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-tabs-scroll .nav-link {
+  white-space: nowrap;
+}
+
+/* Tables */
+.table-responsive {
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 575.98px) {
+  .table-responsive .table {
+    font-size: 0.875rem;
+  }
+
+  .table-responsive .table th,
+  .table-responsive .table td {
+    padding: 0.5rem 0.65rem;
+  }
+
+  .table-responsive .btn-sm {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.8rem;
+  }
+}
+
+.card,
+.kpi {
+  border: 0;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(10, 20, 40, 0.06);
+}
+
+.kpi {
+  background: #fff;
+}
+
+.badge-soft {
+  background: rgba(13, 110, 253, 0.12);
+  color: #0b5ed7;
+}
+
+/* Forms: full-width controls on mobile */
+@media (max-width: 575.98px) {
+  .form-control,
+  .form-select,
+  .btn:not(.btn-sm):not(.btn-link) {
+    min-height: var(--app-touch-min);
+  }
+
+  .display-6 {
+    font-size: 1.75rem;
+  }
+}
+
+/* Donor shell mobile */
+.donor-shell .navbar .header-actions-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  padding-top: 0.5rem;
+}
+
+.donor-shell .navbar .header-actions-mobile .btn {
+  width: 100%;
+  min-height: var(--app-touch-min);
+}
+
+@media (min-width: 992px) {
+  .donor-shell .navbar .header-actions-mobile {
+    flex-direction: row;
+    width: auto;
+    padding-top: 0;
+  }
+
+  .donor-shell .navbar .header-actions-mobile .btn {
+    width: auto;
+  }
+}

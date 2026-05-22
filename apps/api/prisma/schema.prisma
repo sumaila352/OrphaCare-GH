@@ -1,0 +1,256 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  active
+  disabled
+}
+
+enum ChildGender {
+  male
+  female
+  other
+}
+
+enum ChildStatus {
+  active
+  reunified
+  adopted
+  transferred
+  deceased
+}
+
+enum StaffStatus {
+  active
+  inactive
+}
+
+enum AttendanceStatus {
+  present
+  absent
+  leave
+}
+
+enum DonationType {
+  cash
+  in_kind
+}
+
+enum DonationStatus {
+  pending
+  confirmed
+  cancelled
+}
+
+enum InventoryCategory {
+  food
+  clothing
+  medical
+  other
+}
+
+enum StockMovementType {
+  in
+  out
+  adjust
+}
+
+model Role {
+  id        Int        @id @default(autoincrement())
+  name      String
+  slug      String     @unique
+  createdAt DateTime   @default(now()) @map("created_at")
+  users     UserRole[]
+
+  @@map("roles")
+}
+
+model User {
+  id              Int              @id @default(autoincrement())
+  fullName        String           @map("full_name")
+  email           String           @unique
+  passwordHash    String           @map("password_hash")
+  status          UserStatus       @default(active)
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime?        @updatedAt @map("updated_at")
+  roles           UserRole[]
+  passwordResets  PasswordReset[]
+  donors          Donor[]
+  stockMovements  StockMovement[]
+  auditLogs       AuditLog[]
+
+  @@map("users")
+}
+
+model UserRole {
+  userId Int  @map("user_id")
+  roleId Int  @map("role_id")
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model PasswordReset {
+  id        Int       @id @default(autoincrement())
+  userId    Int       @map("user_id")
+  token     String
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@map("password_resets")
+}
+
+model Child {
+  id            Int          @id @default(autoincrement())
+  fullName      String       @map("full_name")
+  dateOfBirth   DateTime?    @map("date_of_birth")
+  gender        ChildGender?
+  admissionDate DateTime?    @map("admission_date")
+  status        ChildStatus  @default(active)
+  notes         String?
+  photoUrl      String?      @map("photo_url")
+  photoPublicId String?      @map("photo_public_id")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime?    @updatedAt @map("updated_at")
+  deletedAt     DateTime?    @map("deleted_at")
+
+  @@index([status])
+  @@index([deletedAt])
+  @@map("children")
+}
+
+model Staff {
+  id        Int          @id @default(autoincrement())
+  fullName  String       @map("full_name")
+  phone     String?
+  email     String?
+  position  String?
+  status    StaffStatus  @default(active)
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime?    @updatedAt @map("updated_at")
+  deletedAt DateTime?    @map("deleted_at")
+  attendance Attendance[]
+
+  @@index([status])
+  @@map("staff")
+}
+
+model Attendance {
+  id          Int              @id @default(autoincrement())
+  staffId     Int              @map("staff_id")
+  attendDate  DateTime         @map("attend_date")
+  status      AttendanceStatus
+  createdAt   DateTime         @default(now()) @map("created_at")
+  staff       Staff            @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  @@unique([staffId, attendDate])
+  @@map("attendance")
+}
+
+model Donor {
+  id        Int        @id @default(autoincrement())
+  userId    Int?       @map("user_id")
+  fullName  String     @map("full_name")
+  phone     String?
+  email     String?
+  address   String?
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime?  @updatedAt @map("updated_at")
+  deletedAt DateTime?  @map("deleted_at")
+  user      User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  donations Donation[]
+
+  @@index([userId])
+  @@map("donors")
+}
+
+model Donation {
+  id        Int            @id @default(autoincrement())
+  donorId   Int?           @map("donor_id")
+  type      DonationType
+  status    DonationStatus @default(pending)
+  amount    Decimal?
+  currency  String         @default("GHS")
+  reference String?
+  notes     String?
+  createdAt DateTime       @default(now()) @map("created_at")
+  donor     Donor?         @relation(fields: [donorId], references: [id], onDelete: SetNull)
+  items     DonationItem[]
+
+  @@index([createdAt])
+  @@index([donorId])
+  @@index([status])
+  @@map("donations")
+}
+
+model DonationItem {
+  id         Int      @id @default(autoincrement())
+  donationId Int      @map("donation_id")
+  itemName   String   @map("item_name")
+  quantity   Decimal  @default(1)
+  unit       String?
+  createdAt  DateTime @default(now()) @map("created_at")
+  donation   Donation @relation(fields: [donationId], references: [id], onDelete: Cascade)
+
+  @@index([donationId])
+  @@map("donation_items")
+}
+
+model InventoryItem {
+  id                Int               @id @default(autoincrement())
+  itemName          String            @map("item_name")
+  category          InventoryCategory @default(other)
+  quantity          Decimal           @default(0)
+  unit              String?
+  lowStockThreshold Decimal?          @map("low_stock_threshold")
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime?         @updatedAt @map("updated_at")
+  deletedAt         DateTime?         @map("deleted_at")
+  movements         StockMovement[]
+
+  @@index([category])
+  @@map("inventory_items")
+}
+
+model StockMovement {
+  id           Int               @id @default(autoincrement())
+  itemId       Int               @map("item_id")
+  movementType StockMovementType @map("movement_type")
+  quantity     Decimal
+  reason       String?
+  createdBy    Int?              @map("created_by")
+  createdAt    DateTime          @default(now()) @map("created_at")
+  item         InventoryItem     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  user         User?             @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+
+  @@index([itemId])
+  @@map("stock_movements")
+}
+
+model AuditLog {
+  id          Int      @id @default(autoincrement())
+  actorUserId Int?     @map("actor_user_id")
+  action      String
+  entityType  String   @map("entity_type")
+  entityId    String?  @map("entity_id")
+  meta        Json?
+  ipAddress   String?  @map("ip_address")
+  createdAt   DateTime @default(now()) @map("created_at")
+  actor       User?    @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([actorUserId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
