@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer';
 import { prisma } from '../lib/prisma.js';
-import { cloudinary, isCloudinaryConfigured } from '../lib/cloudinary.js';
+import { cloudinary, ensureCloudinaryConfigured } from '../lib/cloudinary.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
 
 export const uploadsRouter = Router();
@@ -14,16 +14,17 @@ const upload = multer({
 
 uploadsRouter.post('/children/:id/photo', upload.single('photo'), async (req, res, next) => {
   try {
-    if (!isCloudinaryConfigured()) {
+    if (!ensureCloudinaryConfigured()) {
       return res.status(503).json({
-        error: 'Cloudinary is not configured. Add CLOUDINARY_* keys to apps/api/.env',
+        error: 'Cloudinary is not configured. Add CLOUDINARY_* keys to apps/api/.env and restart the API.',
       });
     }
 
     const id = Number(req.params.id);
     const child = await prisma.child.findFirst({ where: { id, deletedAt: null } });
     if (!child) return res.status(404).json({ error: 'Child not found' });
-    if (!req.file) return res.status(400).json({ error: 'Photo file is required' });
+    const file = req.file;
+    if (!file) return res.status(400).json({ error: 'Photo file is required' });
 
     const folder = process.env.CLOUDINARY_FOLDER ?? 'orphacare/children';
     const result = await new Promise<{ secure_url: string; public_id: string }>((resolve, reject) => {
@@ -34,7 +35,7 @@ uploadsRouter.post('/children/:id/photo', upload.single('photo'), async (req, re
           resolve({ secure_url: uploaded.secure_url, public_id: uploaded.public_id });
         },
       );
-      stream.end(req.file.buffer);
+      stream.end(file.buffer);
     });
 
     if (child.photoPublicId) {

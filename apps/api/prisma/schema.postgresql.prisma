@@ -1,9 +1,13 @@
+// PostgreSQL schema for production. Dev uses schema.prisma (SQLite).
+// Generate client: npm run db:generate:pg -w apps/api
+// Push schema:     npm run db:push:pg -w apps/api
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -133,15 +137,15 @@ model Child {
 }
 
 model Staff {
-  id        Int          @id @default(autoincrement())
-  fullName  String       @map("full_name")
-  phone     String?
-  email     String?
-  position  String?
-  status    StaffStatus  @default(active)
-  createdAt DateTime     @default(now()) @map("created_at")
-  updatedAt DateTime?    @updatedAt @map("updated_at")
-  deletedAt DateTime?    @map("deleted_at")
+  id         Int          @id @default(autoincrement())
+  fullName   String       @map("full_name")
+  phone      String?
+  email      String?
+  position   String?
+  status     StaffStatus  @default(active)
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime?    @updatedAt @map("updated_at")
+  deletedAt  DateTime?    @map("deleted_at")
   attendance Attendance[]
 
   @@index([status])
@@ -149,12 +153,12 @@ model Staff {
 }
 
 model Attendance {
-  id          Int              @id @default(autoincrement())
-  staffId     Int              @map("staff_id")
-  attendDate  DateTime         @map("attend_date")
-  status      AttendanceStatus
-  createdAt   DateTime         @default(now()) @map("created_at")
-  staff       Staff            @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  id         Int              @id @default(autoincrement())
+  staffId    Int              @map("staff_id")
+  attendDate DateTime         @map("attend_date")
+  status     AttendanceStatus
+  createdAt  DateTime         @default(now()) @map("created_at")
+  staff      Staff            @relation(fields: [staffId], references: [id], onDelete: Cascade)
 
   @@unique([staffId, attendDate])
   @@map("attendance")

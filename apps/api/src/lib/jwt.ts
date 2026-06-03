@@ -17,5 +17,13 @@ export function signToken(payload: AuthTokenPayload): string {
 export function verifyToken(token: string): AuthTokenPayload {
   const secret = process.env.JWT_SECRET;
   if (!secret) throw new Error('JWT_SECRET is not set');
-  return jwt.verify(token, secret) as AuthTokenPayload;
+  const decoded = jwt.verify(token, secret);
+  if (typeof decoded === 'string' || !decoded || typeof decoded !== 'object') {
+    throw new Error('Invalid token');
+  }
+  const p = decoded as jwt.JwtPayload & Partial<AuthTokenPayload>;
+  if (typeof p.sub !== 'number' || typeof p.email !== 'string' || !Array.isArray(p.roles)) {
+    throw new Error('Invalid token payload');
+  }
+  return { sub: p.sub, email: p.email, roles: p.roles as string[] };
 }

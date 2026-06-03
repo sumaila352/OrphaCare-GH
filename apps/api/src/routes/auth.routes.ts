@@ -5,8 +5,11 @@ import { z } from 'zod';
 import { prisma } from '../lib/prisma.js';
 import { ensureDonorForUser } from '../lib/donor.js';
 import { signToken } from '../lib/jwt.js';
+import { isGoogleAuthConfigured, verifyGoogleCredential } from '../lib/googleAuth.js';
+import { findOrCreateUserFromGoogle } from '../lib/googleUser.js';
 import type { AuthedRequest } from '../middleware/auth.js';
 import { requireAuth } from '../middleware/auth.js';
+import { isProduction } from '../env.js';
 
 export const authRouter = Router();
 
@@ -29,7 +32,8 @@ const registerSchema = z
 
 authRouter.post('/login', async (req, res, next) => {
   try {
-    const { email, password } = loginSchema.parse(req.body);
+    const { email: rawEmail, password } = loginSchema.parse(req.body);
+    const email = rawEmail.trim().toLowerCase();
     const user = await prisma.user.findUnique({
       where: { email },
       include: { roles: { include: { role: true } } },
@@ -37,6 +41,10 @@ authRouter.post('/login', async (req, res, next) => {
 
     if (!user || user.status !== 'active') {
       return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    if (!user.passwordHash) {
+      return res.status(401).json({ error: 'This account uses Google sign-in. Continue with Google.' });
     }
 
     const ok = await bcrypt.compare(password, user.passwordHash);
@@ -62,9 +70,35 @@ authRouter.post('/login', async (req, res, next) => {
   }
 });
 
+authRouter.post('/google', async (req, res, next) => {
+  try {
+    if (!isGoogleAuthConfigured()) {
+      return res.status(503).json({ error: 'Google sign-in is not configured' });
+    }
+
+    const { credential } = z.object({ credential: z.string().min(10) }).parse(req.body);
+    const profile = await verifyGoogleCredential(credential);
+    const user = await findOrCreateUserFromGoogle(profile);
+
+    const token = signToken({
+      sub: user.id,
+      email: user.email,
+      roles: user.roles,
+    });
+
+    return res.json({ token, user });
+  } catch (e) {
+    if (e instanceof Error && e.message.includes('Google')) {
+      return res.status(401).json({ error: e.message });
+    }
+    return next(e);
+  }
+});
+
 authRouter.post('/register', async (req, res, next) => {
   try {
-    const { fullName, email, password } = registerSchema.parse(req.body);
+    const { fullName, email: rawEmail, password } = registerSchema.parse(req.body);
+    const email = rawEmail.trim().toLowerCase();
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) return res.status(409).json({ error: 'Email already exists' });
 
@@ -138,7 +172,7 @@ authRouter.post('/forgot-password', async (req, res, next) => {
 
     return res.json({
       message: 'If the email exists, a reset link has been generated.',
-      resetUrl, // demo mode — remove when email service is added
+      ...(!isProduction() && resetUrl ? { resetUrl } : {}),
     });
   } catch (e) {
     return next(e);

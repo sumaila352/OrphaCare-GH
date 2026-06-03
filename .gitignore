@@ -13,8 +13,12 @@ apps/api/dist/
 .env
 .env.*
 !.env.example
+!apps/web/.env.example
 apps/api/.env
 apps/web/.env.local
+
+# Production / local overrides
+*.local
 
 # Local database
 apps/api/prisma/dev.db

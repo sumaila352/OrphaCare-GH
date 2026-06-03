@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
+import { ThemeProvider } from '@/components/ThemeProvider';
+import { ThemeScript } from '@/components/ThemeScript';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -15,8 +17,9 @@ export const viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <ThemeScript />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -33,7 +36,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <ThemeProvider>{children}</ThemeProvider>
+      </body>
       <Script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         crossOrigin="anonymous"

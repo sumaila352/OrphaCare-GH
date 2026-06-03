@@ -54,9 +54,6 @@ function LoginForm() {
               <Link href="/">← Home</Link>
             </div>
           </form>
-          <p className="small text-muted mt-3 mb-0">
-            Staff demo: <code>admin@orphacare.local</code> / <code>Admin@123</code>
-          </p>
         </div>
       </div>
     </div>

@@ -48,9 +48,8 @@
   color: var(--oc-gold);
 }
 
-.public-site .site-header--hero:not(.site-header--solid) .navbar-toggler {
+.public-site .site-header--hero:not(.site-header--solid) .navbar-toggler:not(.navbar-toggler-oc) {
   border-color: rgba(255, 255, 255, 0.4);
-  filter: invert(1);
 }
 
 .public-site .site-header--solid,
@@ -163,7 +162,42 @@
   padding: 0.55rem 1.25rem;
   border-radius: 999px;
   text-decoration: none;
-  transition: background 0.2s, opacity 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, opacity 0.2s, border-color 0.2s, color 0.2s;
+  box-sizing: border-box;
+}
+
+/* Navbar Login + Join as donor — identical pill shape */
+.public-site .header-actions .btn-oc-nav {
+  min-height: 44px;
+  padding: 0.6rem 1.35rem;
+  border-radius: 999px;
+  border-width: 2px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  opacity: 1;
+}
+
+@media (min-width: 992px) {
+  .public-site .header-actions .btn-oc-nav {
+    flex: 0 0 auto;
+    min-width: 0;
+  }
+}
+
+.public-site .site-header--hero:not(.site-header--solid) .header-actions .btn-oc-nav {
+  color: rgba(255, 255, 255, 0.95);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.public-site .site-header--hero:not(.site-header--solid) .header-actions .btn-oc-nav:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .public-site .site-header--solid .btn-oc-ghost,
@@ -533,13 +567,15 @@
   margin: 0 0 1.5rem;
   position: relative;
   z-index: 1;
+  color: #ffffff;
 }
 
 .public-site .quote-block cite {
   font-style: normal;
   font-size: 0.9rem;
-  opacity: 0.85;
+  opacity: 0.9;
   font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* CTA */
@@ -602,6 +638,37 @@
 }
 
 /* Auth & misc cards */
+.public-site .auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.25rem 0 1rem;
+  color: #6c757d;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.public-site .auth-divider::before,
+.public-site .auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(15, 76, 69, 0.12);
+}
+
+.public-site .google-signin-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  overflow: hidden;
+}
+
+.public-site .google-signin-block {
+  margin-top: 0.25rem;
+}
+
 .public-site .auth-card {
   background: var(--oc-white);
   border-radius: var(--oc-radius);
@@ -716,10 +783,11 @@
     width: 100%;
   }
 
-  .public-site .header-actions .btn-oc-primary,
-  .public-site .header-actions .btn-oc-ghost {
-    flex: 1;
-    text-align: center;
+  .public-site .header-actions .btn-oc-nav {
+    flex: 1 1 0;
+    width: 100%;
+    min-height: 44px;
+    justify-content: center;
   }
 
   .public-site .section {
@@ -796,4 +864,412 @@
   .public-site .content-card.sticky-lg-top {
     position: static !important;
   }
+}
+
+/* —— Dark mode (public site) —— */
+[data-theme='dark'] .public-site {
+  --oc-cream: #0e1218;
+  --oc-cream-dark: #1a2230;
+  --oc-white: #1c2433;
+  --oc-ink: #f2f5fa;
+  --oc-muted: #c8d4e0;
+  --oc-teal-light: #5ecfba;
+  --oc-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+  --oc-shadow-sm: 0 8px 28px rgba(0, 0, 0, 0.35);
+  color: var(--oc-ink);
+}
+
+[data-theme='dark'] .public-site .text-muted {
+  color: var(--oc-muted) !important;
+}
+
+[data-theme='dark'] .public-site .site-header--solid,
+[data-theme='dark'] .public-site .site-header:not(.site-header--hero) {
+  background: rgba(21, 27, 38, 0.92);
+  box-shadow: 0 1px 0 var(--oc-border, rgba(255, 255, 255, 0.08));
+}
+
+[data-theme='dark'] .public-site .site-header--hero:not(.site-header--solid) .theme-toggle,
+.public-site .site-header--hero:not(.site-header--solid) .theme-toggle {
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #fff !important;
+}
+
+.public-site .site-header--hero:not(.site-header--solid) .navbar-toggler-oc {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.public-site .site-header--hero:not(.site-header--solid) .navbar-toggler-oc .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.95%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2.25' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+[data-theme='dark'] .public-site .site-header--solid .navbar-brand,
+[data-theme='dark'] .public-site .site-header:not(.site-header--hero) .navbar-brand {
+  color: var(--oc-teal-light, #3db89a);
+}
+
+[data-theme='dark'] .public-site .site-header--solid .nav-link,
+[data-theme='dark'] .public-site .site-header:not(.site-header--hero) .nav-link {
+  color: #d1dae6;
+}
+
+[data-theme='dark'] .public-site .site-header--solid .nav-link:hover,
+[data-theme='dark'] .public-site .site-header--solid .nav-link.active,
+[data-theme='dark'] .public-site .site-header:not(.site-header--hero) .nav-link:hover,
+[data-theme='dark'] .public-site .site-header:not(.site-header--hero) .nav-link.active {
+  color: var(--oc-teal-light);
+}
+
+[data-theme='dark'] .public-site .header-actions .btn-oc-nav,
+[data-theme='dark'] .public-site .site-header--solid .btn-oc-nav,
+[data-theme='dark'] .public-site .site-header:not(.site-header--hero) .btn-oc-nav {
+  color: #e8edf5;
+  border-color: rgba(255, 255, 255, 0.42);
+  opacity: 1;
+  background: transparent;
+}
+
+[data-theme='dark'] .public-site .header-actions .btn-oc-nav:hover,
+[data-theme='dark'] .public-site .site-header--solid .btn-oc-nav:hover,
+[data-theme='dark'] .public-site .site-header:not(.site-header--hero) .btn-oc-nav:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='dark'] .public-site .site-header--hero:not(.site-header--solid) .header-actions .btn-oc-nav {
+  color: rgba(255, 255, 255, 0.95);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+[data-theme='dark'] .public-site .lead {
+  color: #d8e0ea;
+}
+
+[data-theme='dark'] .public-site .hero-lead,
+[data-theme='dark'] .public-site .hero-trust {
+  opacity: 1;
+  color: rgba(255, 255, 255, 0.94);
+}
+
+[data-theme='dark'] .public-site .section-title,
+[data-theme='dark'] .public-site .program-card h3,
+[data-theme='dark'] .public-site .content-card h2 {
+  color: #e8f0f5;
+}
+
+[data-theme='dark'] .public-site .section-intro,
+[data-theme='dark'] .public-site .stat-tile .label,
+[data-theme='dark'] .public-site .program-card p,
+[data-theme='dark'] .public-site .feature-card p,
+[data-theme='dark'] .public-site .step-card p,
+[data-theme='dark'] .public-site .cta-panel {
+  background: var(--oc-white);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .public-site .cta-panel h2 {
+  color: #f2f5fa !important;
+}
+
+[data-theme='dark'] .public-site .cta-panel p {
+  color: #c8d4e0 !important;
+}
+
+/* Quote block keeps teal panel — text must stay white (not --oc-white token in dark) */
+[data-theme='dark'] .public-site .quote-block {
+  background: linear-gradient(135deg, #0a332e 0%, #1a6b62 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .public-site .quote-block blockquote,
+[data-theme='dark'] .public-site .quote-block cite {
+  color: #ffffff !important;
+}
+
+[data-theme='dark'] .public-site .quote-block cite {
+  color: rgba(255, 255, 255, 0.88) !important;
+}
+
+[data-theme='dark'] .public-site .quote-block::before {
+  opacity: 0.2;
+  color: #ffffff;
+}
+
+[data-theme='dark'] .public-site .section--white,
+[data-theme='dark'] .public-site .section--cream {
+  background: var(--oc-cream-dark);
+}
+
+[data-theme='dark'] .public-site .program-card {
+  background: var(--oc-white);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: var(--oc-ink);
+}
+
+[data-theme='dark'] .public-site .stat-tile .value {
+  color: var(--oc-teal-light);
+}
+
+/* Hero “Live impact” panel — dark surface + readable heading */
+[data-theme='dark'] .public-site .hero .impact-panel {
+  background: var(--oc-white);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--oc-ink);
+  box-shadow: var(--oc-shadow);
+}
+
+[data-theme='dark'] .public-site .hero .impact-panel h3 {
+  color: var(--oc-teal-light);
+}
+
+[data-theme='dark'] .public-site .hero .stat-tile {
+  background: var(--oc-cream-dark);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='dark'] .public-site .hero .stat-tile .value {
+  color: var(--oc-teal-light);
+}
+
+[data-theme='dark'] .public-site .hero .stat-tile .label {
+  color: #c8d4e0 !important;
+}
+
+[data-theme='dark'] .public-site .hero .stat-tile--wide .value,
+[data-theme='dark'] .public-site .hero .stat-tile--wide .label {
+  color: #ffffff;
+}
+
+[data-theme='dark'] .public-site .auth-card,
+[data-theme='dark'] .public-site .auth-card .h4,
+[data-theme='dark'] .public-site .auth-card h1 {
+  color: var(--oc-ink);
+}
+
+[data-theme='dark'] .public-site .auth-card .text-muted,
+[data-theme='dark'] .public-site .auth-card .form-text {
+  color: #c5ced9 !important;
+}
+
+[data-theme='dark'] .public-site .content-card {
+  color: var(--oc-ink);
+}
+
+[data-theme='dark'] .public-site .content-card .text-muted {
+  color: #c5ced9 !important;
+}
+
+[data-theme='dark'] .public-site .auth-card,
+[data-theme='dark'] .public-site .content-card,
+[data-theme='dark'] .public-site .impact-panel,
+[data-theme='dark'] .public-site .stat-tile {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='dark'] .public-site .form-control {
+  background: var(--oc-input-bg, #1c2433);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--oc-ink);
+}
+
+[data-theme='dark'] .public-site .hero-card-inner {
+  background: var(--oc-white);
+}
+
+/* —— About page —— */
+.public-site .about-page-header {
+  max-width: 40rem;
+}
+
+.public-site .page-hero-label {
+  color: var(--oc-gold);
+}
+
+.public-site .page-hero h1,
+.public-site .page-hero .lead {
+  color: #ffffff;
+}
+
+.public-site .about-pillar {
+  background: var(--oc-white);
+  border-radius: var(--oc-radius);
+  padding: 1.75rem 1.5rem;
+  border: 1px solid rgba(15, 76, 69, 0.06);
+  box-shadow: var(--oc-shadow-sm);
+  border-left: 4px solid var(--card-accent, var(--oc-teal));
+}
+
+.public-site .about-pillar-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  margin-bottom: 1rem;
+  background: var(--icon-bg, rgba(15, 76, 69, 0.08));
+  color: var(--card-accent, var(--oc-teal));
+}
+
+.public-site .about-pillar-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--oc-teal-deep);
+  margin-bottom: 0.65rem;
+}
+
+.public-site .about-pillar-text {
+  color: var(--oc-muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.public-site .about-contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.public-site .about-contact-list li {
+  display: grid;
+  gap: 0.25rem;
+}
+
+@media (min-width: 480px) {
+  .public-site .about-contact-list li {
+    grid-template-columns: 7.5rem 1fr;
+    align-items: baseline;
+    gap: 1rem;
+  }
+}
+
+.public-site .about-contact-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--oc-muted);
+}
+
+.public-site .about-contact-value,
+.public-site .about-link {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--oc-teal);
+  text-decoration: none;
+}
+
+.public-site .about-link:hover {
+  color: var(--oc-teal-light);
+  text-decoration: underline;
+}
+
+.public-site .about-cta-card {
+  background: linear-gradient(165deg, var(--oc-white) 0%, var(--oc-cream) 100%);
+  border: 1px solid rgba(15, 76, 69, 0.08);
+}
+
+.public-site .about-cta-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--oc-gold);
+  margin-bottom: 0.5rem;
+}
+
+.public-site .about-cta-text {
+  color: var(--oc-muted);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.public-site .about-cta-card .h4 {
+  font-family: var(--font-display);
+  color: var(--oc-teal-deep);
+}
+
+@media (max-width: 991.98px) {
+  .public-site .about-intro .section {
+    padding-top: 3.5rem;
+  }
+
+  .public-site .about-bottom .about-cta-card {
+    margin-top: 0.25rem;
+  }
+}
+
+/* About — dark mode */
+[data-theme='dark'] .public-site .page-hero h1,
+[data-theme='dark'] .public-site .page-hero .lead,
+[data-theme='dark'] .public-site .page-hero-label {
+  color: #ffffff;
+}
+
+[data-theme='dark'] .public-site .page-hero .lead {
+  opacity: 1;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+[data-theme='dark'] .public-site .about-pillar {
+  background: var(--oc-white);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .public-site .about-pillar-title,
+[data-theme='dark'] .public-site .about-cta-card .h4 {
+  color: #eef3f8;
+}
+
+[data-theme='dark'] .public-site .about-pillar-text,
+[data-theme='dark'] .public-site .about-cta-text,
+[data-theme='dark'] .public-site .about-contact-label {
+  color: #c5d0dc !important;
+}
+
+[data-theme='dark'] .public-site .about-contact-value {
+  color: #e8edf5;
+}
+
+[data-theme='dark'] .public-site .about-link {
+  color: var(--oc-teal-light) !important;
+}
+
+[data-theme='dark'] .public-site .about-link:hover {
+  color: #9ed4ff !important;
+}
+
+[data-theme='dark'] .public-site .about-cta-card {
+  background: linear-gradient(165deg, var(--oc-white) 0%, var(--oc-cream-dark) 100%);
+}
+
+[data-theme='dark'] .public-site .about-cta-eyebrow {
+  color: var(--oc-gold);
+}
+
+[data-theme='dark'] .public-site .content-card.about-contact-card h2,
+[data-theme='dark'] .public-site .content-card.about-contact-card h2 i {
+  color: #eef3f8;
+}
+
+[data-theme='dark'] .public-site .btn-oc-outline {
+  color: var(--oc-teal-light);
+  border-color: var(--oc-teal-light);
+}
+
+[data-theme='dark'] .public-site .btn-oc-outline:hover {
+  background: var(--oc-teal-light);
+  color: #0c1017;
+}
+
+[data-theme='dark'] .public-site .about-cta-card .btn-oc-ghost {
+  color: #d8e0ea;
+  border-color: rgba(255, 255, 255, 0.35);
+  opacity: 1;
 }

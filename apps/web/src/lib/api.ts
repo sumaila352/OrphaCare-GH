@@ -70,6 +70,11 @@ export async function api<T>(path: string, options: RequestInit = {}): Promise<T
 
 export const login = (email: string, password: string) =>
   api<{ token: string; user: AuthUser }>('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+export const loginWithGoogle = (credential: string) =>
+  api<{ token: string; user: AuthUser }>('/api/auth/google', {
+    method: 'POST',
+    body: JSON.stringify({ credential }),
+  });
 export const register = (
   fullName: string,
   email: string,
@@ -91,7 +96,19 @@ export const createMyDonation = (payload: Record<string, unknown>) =>
   api<Donation>('/api/me/donations', { method: 'POST', body: JSON.stringify(payload) });
 export const updateDonationStatus = (id: number, status: DonationStatus) =>
   api<Donation>(`/api/donations/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) });
-export const getDashboardStats = () => api<{ totalChildren: number; donationsThisMonth: number; lowStock: { itemName: string; quantity: string; lowStockThreshold: string }[] }>('/api/dashboard/stats');
+export type DashboardStats = {
+  totalChildren: number;
+  donationsThisMonth: number;
+  donationsYtd: number;
+  pendingDonations: number;
+  activeStaff: number;
+  donationsByMonth: { label: string; amount: number }[];
+  childrenByStatus: { status: string; count: number }[];
+  donationsBreakdown: { cashAmount: number; inKindCount: number };
+  lowStock: { itemName: string; quantity: number; lowStockThreshold: number }[];
+};
+
+export const getDashboardStats = () => api<DashboardStats>('/api/dashboard/stats');
 export const getChildren = (params?: { q?: string; status?: string }) => {
   const qs = new URLSearchParams();
   if (params?.q) qs.set('q', params.q);
