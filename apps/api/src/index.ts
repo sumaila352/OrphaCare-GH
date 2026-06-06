@@ -3,6 +3,7 @@ import { validateEnv, isProduction } from './env.js';
 import { createApp } from './app.js';
 import { isCloudinaryConfigured } from './lib/cloudinary.js';
 import { isGoogleAuthConfigured } from './lib/googleAuth.js';
+import { isPaystackConfigured } from './lib/paystack.js';
 
 validateEnv();
 
@@ -20,5 +21,10 @@ app.listen(port, () => {
     isGoogleAuthConfigured()
       ? 'Google sign-in: configured'
       : 'Google sign-in: not configured (set GOOGLE_CLIENT_ID in apps/api/.env)',
+  );
+  console.log(
+    isPaystackConfigured()
+      ? 'Paystack: configured (online donations enabled)'
+      : 'Paystack: not configured (set PAYSTACK_* in apps/api/.env)',
   );
 });

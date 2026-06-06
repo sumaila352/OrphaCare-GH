@@ -14,19 +14,17 @@ export function ContinueWithGoogle({ disabled, onSuccess, onError }: Props) {
   const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID?.trim();
 
   if (!clientId) {
+    if (process.env.NODE_ENV !== 'development') return null;
     return (
       <p className="small text-muted mb-0 text-center">
         Google sign-in is not configured. Add <code>NEXT_PUBLIC_GOOGLE_CLIENT_ID</code> to{' '}
-        <code>apps/web/.env.local</code>.
+        <code>apps/web/.env.local</code> and <code>GOOGLE_CLIENT_ID</code> to <code>apps/api/.env</code>.
       </p>
     );
   }
 
   return (
     <div className="google-signin-block">
-      <div className="auth-divider" role="separator">
-        <span>or</span>
-      </div>
       <div className="google-signin-wrap">
         <GoogleLogin
           text="continue_with"
@@ -50,6 +48,9 @@ export function ContinueWithGoogle({ disabled, onSuccess, onError }: Props) {
           }}
           onError={() => onError('Google sign-in was cancelled or failed')}
         />
+      </div>
+      <div className="auth-divider" role="separator">
+        <span>or</span>
       </div>
     </div>
   );

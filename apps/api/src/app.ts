@@ -14,6 +14,8 @@ import { donorsRouter } from './routes/donors.routes.js';
 import { donationsRouter } from './routes/donations.routes.js';
 import { inventoryRouter } from './routes/inventory.routes.js';
 import { reportsRouter } from './routes/reports.routes.js';
+import { paymentsRouter } from './routes/payments.routes.js';
+import { paystackWebhookHandler } from './routes/webhooks.routes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { notFoundHandler } from './middleware/notFound.js';
 import { getCorsOrigins, isProduction } from './env.js';
@@ -39,6 +41,12 @@ export function createApp() {
     }),
   );
 
+  app.post(
+    '/api/webhooks/paystack',
+    express.raw({ type: 'application/json', limit: '1mb' }),
+    paystackWebhookHandler,
+  );
+
   app.use(express.json({ limit: '1mb' }));
   app.use(cookieParser());
 
@@ -62,6 +70,7 @@ export function createApp() {
   app.use('/api/public', publicRouter);
   app.use('/api/auth', authLimiter, authRouter);
   app.use('/api/me', meRouter);
+  app.use('/api/me/payments', paymentsRouter);
   app.use('/api/children', childrenRouter);
   app.use('/api/dashboard', dashboardRouter);
   app.use('/api/uploads', uploadsRouter);

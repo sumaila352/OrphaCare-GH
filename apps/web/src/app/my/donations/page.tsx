@@ -1,11 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
 import { AuthGuard } from '@/components/AuthGuard';
 import {
   getMyDonationSummary,
   getMyDonations,
+  verifyPaystackPayment,
   type Donation,
   type MyDonationSummary,
 } from '@/lib/api';
@@ -16,10 +18,12 @@ function statusBadge(status: string) {
   return <span className="badge bg-warning text-dark">Pending</span>;
 }
 
-export default function MyDonationsPage() {
+function MyDonationsContent() {
+  const searchParams = useSearchParams();
   const [donations, setDonations] = useState<Donation[]>([]);
   const [summary, setSummary] = useState<MyDonationSummary | null>(null);
   const [error, setError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
 
   async function load() {
     try {
@@ -36,22 +40,41 @@ export default function MyDonationsPage() {
     load();
   }, []);
 
+  useEffect(() => {
+    const payment = searchParams.get('payment');
+    const ref = searchParams.get('ref');
+    if (payment !== 'success') return;
+
+    if (!ref) {
+      setSuccessMsg('Thank you! Your payment was received.');
+      return;
+    }
+
+    verifyPaystackPayment(ref)
+      .then(() => {
+        setSuccessMsg('Thank you! Your payment was received and your donation is confirmed.');
+        return load();
+      })
+      .catch((e) => {
+        setError(e instanceof Error ? e.message : 'Could not verify payment');
+      });
+  }, [searchParams]);
+
   return (
-    <AuthGuard mode="donor">
-      {() => (
-        <>
-          <div className="page-toolbar mb-4">
-            <div>
-              <h1 className="h3 mb-1">My donations</h1>
-              <p className="text-muted mb-0">Track every gift you have made to OrphaCare GH.</p>
-            </div>
-            <div className="page-toolbar-actions">
-              <Link className="btn btn-primary" href="/donate">
-                Make a donation
-              </Link>
-            </div>
-          </div>
-          {error && <div className="alert alert-danger">{error}</div>}
+    <>
+      <div className="page-toolbar mb-4">
+        <div>
+          <h1 className="h3 mb-1">My donations</h1>
+          <p className="text-muted mb-0">Track every gift you have made to OrphaCare GH.</p>
+        </div>
+        <div className="page-toolbar-actions">
+          <Link className="btn btn-primary" href="/donate">
+            Make a donation
+          </Link>
+        </div>
+      </div>
+      {successMsg && <div className="alert alert-success">{successMsg}</div>}
+      {error && <div className="alert alert-danger">{error}</div>}
           {summary && (
             <div className="row g-3 mb-4">
               <div className="col-12 col-sm-4">
@@ -112,6 +135,16 @@ export default function MyDonationsPage() {
             </div>
           </div>
         </>
+  );
+}
+
+export default function MyDonationsPage() {
+  return (
+    <AuthGuard mode="donor">
+      {() => (
+        <Suspense fallback={<div className="text-center py-5"><div className="spinner-border text-primary" /></div>}>
+          <MyDonationsContent />
+        </Suspense>
       )}
     </AuthGuard>
   );

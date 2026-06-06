@@ -9,7 +9,9 @@ This guide deploys **OrphaCare GH** as two services:
 
 **Do not paste secrets into chat, GitHub issues, or commit `.env` files.** Set them only in Render and Vercel dashboards (or a password manager).
 
----
+**Quick checklist:** [DEPLOY_CHECKLIST.md](./DEPLOY_CHECKLIST.md) — tick boxes in order while deploying.
+
+**Deploy order:** GitHub push → Render Postgres + API → seed admin → Vercel web → set `CLIENT_URL` → Google origins + Paystack webhook → verify.
 
 ## What you need before starting
 
@@ -163,6 +165,10 @@ Ensure the repo is on GitHub (e.g. `sumaila352/OrphaCare-GH`). Both Render and V
 | `CLOUDINARY_API_SECRET` | From Cloudinary |
 | `CLOUDINARY_FOLDER` | `orphacare/children` (optional) |
 | `GOOGLE_CLIENT_ID` | OAuth Web client ID (same as Vercel) |
+| `PAYSTACK_SECRET_KEY` | `sk_live_...` from Paystack |
+| `PAYSTACK_PUBLIC_KEY` | `pk_live_...` from Paystack |
+| `SEED_ADMIN_EMAIL` | Admin email for first seed |
+| `SEED_ADMIN_PASSWORD` | Strong password (remove after seed) |
 
 Render sets `PORT` automatically — do not override unless you know why.
 
@@ -203,6 +209,7 @@ Or set `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` in Render env temporarily, run
 | Key | Value |
 |-----|--------|
 | `NEXT_PUBLIC_API_URL` | `https://orphacare-api.onrender.com` *(your Render URL)* |
+| `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | Same as Render `GOOGLE_CLIENT_ID` |
 | `NEXT_PUBLIC_SHOW_DEMO_HINT` | `false` |
 
 4. Deploy. Copy the production URL (e.g. `https://orphacare-gh.vercel.app`).
@@ -222,6 +229,7 @@ Or set `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` in Render env temporarily, run
 | Public stats | Home page loads donation/children stats |
 | Uploads | Admin → child photo (needs Cloudinary) |
 | Donor signup | `/register` → `/my/donations` |
+| Online donation | `/donate` → Pay online → Paystack test card/MoMo |
 
 If login works on localhost but not Vercel:
 
@@ -247,6 +255,18 @@ If login works on localhost but not Vercel:
 | `SEED_ADMIN_EMAIL` | First seed | Remove password from env after seed |
 | `SEED_ADMIN_PASSWORD` | First seed | Only for initial `db:seed` |
 | `SEED_DEMO_DATA` | No | Must be unset or `false` in prod |
+| `PAYSTACK_SECRET_KEY` | For online donations | `sk_live_...` from Paystack dashboard |
+| `PAYSTACK_PUBLIC_KEY` | For online donations | `pk_live_...` (same account) |
+
+### Paystack setup
+
+1. Create an account at [Paystack](https://paystack.com) and complete business verification for live GHS payments.
+2. **Settings → API Keys & Webhooks** — copy **Public** and **Secret** keys into Render (`PAYSTACK_PUBLIC_KEY`, `PAYSTACK_SECRET_KEY`).
+3. **Webhook URL** (live): `https://YOUR-API.onrender.com/api/webhooks/paystack`
+4. Enable events: `charge.success` and `charge.failed`.
+5. For local testing, use **test keys** (`pk_test_`, `sk_test_`) and Paystack’s [test cards / MoMo](https://paystack.com/docs/payments/test-payments).
+
+Donors use **Pay online (card / MoMo)** on `/donate`. Payments are verified via webhook and the `/api/me/payments/verify` endpoint after checkout.
 
 ### Vercel (`apps/web`)
 
@@ -270,7 +290,8 @@ The repo includes `render.yaml` for Infrastructure-as-Code. On Render: **New +**
 - **HTTPS:** Both platforms provide TLS; always use `https://` in env URLs.
 - **Rotate secrets** if they were ever shared in chat or screenshots.
 - **Backups:** Enable automated backups on Render Postgres (paid plans) or your provider’s backup feature.
-- **Email / Paystack:** Not wired yet; password-reset links use `CLIENT_URL` but email sending is not implemented.
+- **Email:** Password-reset links use `CLIENT_URL` but email sending is not implemented.
+- **Paystack:** Requires `PAYSTACK_*` keys on the API and webhook URL pointing to `/api/webhooks/paystack`.
 
 ---
 
@@ -287,6 +308,8 @@ CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
 SEED_ADMIN_EMAIL=
 SEED_ADMIN_PASSWORD=
+PAYSTACK_SECRET_KEY=
+PAYSTACK_PUBLIC_KEY=
 
 # === VERCEL (WEB) ===
 NEXT_PUBLIC_API_URL=https://....onrender.com

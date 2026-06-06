@@ -21,6 +21,14 @@ export function errorHandler(err: unknown, _req: Request, res: Response, _next: 
     }
   }
 
+  if (err instanceof Error) {
+    const clientError =
+      /not configured|minimum|not successful|not found|not allowed|timed out|could not reach paystack|could not start paystack|verification failed|paid amount/i.test(
+        err.message,
+      );
+    return res.status(clientError ? 400 : 502).json({ error: err.message });
+  }
+
   console.error(err);
   return res.status(500).json({ error: 'Internal server error' });
 }

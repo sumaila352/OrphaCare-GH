@@ -11,12 +11,24 @@ export type Child = {
 export type Staff = { id: number; fullName: string; phone: string | null; email: string | null; position: string | null; status: string };
 export type Donor = { id: number; fullName: string; phone: string | null; email: string | null; address: string | null; _count?: { donations: number } };
 export type DonationStatus = 'pending' | 'confirmed' | 'cancelled';
+export type PaymentMethod = 'manual' | 'paystack';
 export type Donation = {
   id: number; donorId: number | null; type: 'cash' | 'in_kind'; status: DonationStatus;
+  paymentMethod?: PaymentMethod;
   amount: number | null; currency: string;
   reference: string | null; notes: string | null; createdAt: string;
   donor?: { id: number; fullName: string } | null;
   items?: { id: number; itemName: string; quantity: number; unit: string | null }[];
+};
+export type PaystackConfig = { enabled: boolean; publicKey: string | null };
+export type PaystackInitializeResult = {
+  donation: Donation;
+  publicKey: string;
+  email: string;
+  amountGhs: number;
+  reference: string;
+  authorizationUrl: string;
+  accessCode: string;
 };
 export type PublicStats = {
   childrenActive: number;
@@ -87,6 +99,14 @@ export const register = (
   });
 export const getMe = () => api<AuthUser>('/api/auth/me');
 export const getPublicStats = () => api<PublicStats>('/api/public/stats');
+export const getPaystackConfig = () => api<PaystackConfig>('/api/public/paystack-config');
+export const initializePaystackPayment = (payload: { amount: number; notes?: string | null }) =>
+  api<PaystackInitializeResult>('/api/me/payments/initialize', { method: 'POST', body: JSON.stringify(payload) });
+export const verifyPaystackPayment = (reference: string) =>
+  api<{ donation: Donation; status: string }>('/api/me/payments/verify', {
+    method: 'POST',
+    body: JSON.stringify({ reference }),
+  });
 export const getMyDonor = () => api<DonorProfile>('/api/me/donor');
 export const updateMyDonor = (payload: { phone?: string | null; address?: string | null }) =>
   api<DonorProfile>('/api/me/donor', { method: 'PATCH', body: JSON.stringify(payload) });

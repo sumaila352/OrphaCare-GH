@@ -48,6 +48,11 @@ enum DonationStatus {
   cancelled
 }
 
+enum PaymentMethod {
+  manual
+  paystack
+}
+
 enum InventoryCategory {
   food
   clothing
@@ -178,17 +183,18 @@ model Donor {
 }
 
 model Donation {
-  id        Int            @id @default(autoincrement())
-  donorId   Int?           @map("donor_id")
-  type      DonationType
-  status    DonationStatus @default(pending)
-  amount    Decimal?
-  currency  String         @default("GHS")
-  reference String?
-  notes     String?
-  createdAt DateTime       @default(now()) @map("created_at")
-  donor     Donor?         @relation(fields: [donorId], references: [id], onDelete: SetNull)
-  items     DonationItem[]
+  id            Int            @id @default(autoincrement())
+  donorId       Int?           @map("donor_id")
+  type          DonationType
+  status        DonationStatus @default(pending)
+  paymentMethod PaymentMethod  @default(manual) @map("payment_method")
+  amount        Decimal?
+  currency      String         @default("GHS")
+  reference     String?        @unique
+  notes         String?
+  createdAt     DateTime       @default(now()) @map("created_at")
+  donor         Donor?         @relation(fields: [donorId], references: [id], onDelete: SetNull)
+  items         DonationItem[]
 
   @@index([createdAt])
   @@index([donorId])

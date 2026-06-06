@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Script from 'next/script';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { ThemeScript } from '@/components/ThemeScript';
+import { AppGoogleOAuthProvider } from '@/components/GoogleOAuthProvider';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -37,7 +38,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <AppGoogleOAuthProvider>
+          <ThemeProvider>{children}</ThemeProvider>
+        </AppGoogleOAuthProvider>
       </body>
       <Script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

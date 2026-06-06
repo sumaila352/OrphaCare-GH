@@ -53,9 +53,8 @@ npm run dev
 
 ## Production deployment (Render + Vercel)
 
-**Full step-by-step guide:** [DEPLOYMENT.md](./DEPLOYMENT.md) — credentials checklist, Render API, Vercel web, first admin seed, and troubleshooting.
-
-Optional Render Blueprint: [`render.yaml`](./render.yaml). Vercel root directory: `apps/web`.
+**Step-by-step checklist:** [DEPLOY_CHECKLIST.md](./DEPLOY_CHECKLIST.md)  
+**Full guide:** [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 ### 1. PostgreSQL database
 
