@@ -117,6 +117,7 @@ Use this **in order** with the full guide in [DEPLOYMENT.md](./DEPLOYMENT.md).
 | Symptom | Fix |
 |---------|-----|
 | Build fails at `tsc` / `command sh -c tsc` | Build Command must be `npm install --include=dev && npm run build:production -w apps/api` (see below) |
+| Vercel fails on `db:generate` / Prisma during `npm install` | Push latest code (postinstall skips on Vercel). Root Directory must be `apps/web`. |
 | Login works locally, not on Vercel | Check `NEXT_PUBLIC_API_URL` and `CLIENT_URL` match exact https URLs |
 | CORS error | `CLIENT_URL` must match browser address bar exactly |
 | Google button missing | Set `NEXT_PUBLIC_GOOGLE_CLIENT_ID` on **Vercel**, redeploy web |
