@@ -29,7 +29,7 @@ Use this **in order** with the full guide in [DEPLOYMENT.md](./DEPLOYMENT.md).
 ## Step 2 — Render: API
 
 - [ ] **New +** → **Web Service** → connect GitHub repo
-- [ ] Build: `npm install && npm run build:production -w apps/api`
+- [ ] Build: `npm install --include=dev && npm run build:production -w apps/api`
 - [ ] Start: `npm run start -w apps/api`
 - [ ] Health check: `/health`
 - [ ] Set environment variables (Render dashboard):
@@ -64,7 +64,10 @@ Use this **in order** with the full guide in [DEPLOYMENT.md](./DEPLOYMENT.md).
 ## Step 4 — Vercel: Web
 
 - [ ] [vercel.com](https://vercel.com) → **Add Project** → import same GitHub repo
-- [ ] **Root Directory:** `apps/web`
+- [ ] **Before Deploy:** click **Edit** next to **Root Directory** → enter **`apps/web`**
+  - If Root Directory is empty, Vercel looks at the repo root and fails with *“No Next.js version detected”*
+  - You should see **Next.js** detected after setting `apps/web`
+- [ ] Leave Build Command / Output as **defaults** (Next.js auto-detect)
 - [ ] Environment variables:
 
 | Variable | Value |
@@ -113,6 +116,7 @@ Use this **in order** with the full guide in [DEPLOYMENT.md](./DEPLOYMENT.md).
 
 | Symptom | Fix |
 |---------|-----|
+| Build fails at `tsc` / `command sh -c tsc` | Build Command must be `npm install --include=dev && npm run build:production -w apps/api` (see below) |
 | Login works locally, not on Vercel | Check `NEXT_PUBLIC_API_URL` and `CLIENT_URL` match exact https URLs |
 | CORS error | `CLIENT_URL` must match browser address bar exactly |
 | Google button missing | Set `NEXT_PUBLIC_GOOGLE_CLIENT_ID` on **Vercel**, redeploy web |

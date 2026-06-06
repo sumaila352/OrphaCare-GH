@@ -16,7 +16,8 @@ services:
     runtime: node
     plan: free
     branch: main
-    buildCommand: npm install && npm run build:production -w apps/api
+    # --include=dev required: NODE_ENV=production skips devDependencies (typescript, prisma, @types)
+    buildCommand: npm install --include=dev && npm run build:production -w apps/api
     startCommand: npm run start -w apps/api
     healthCheckPath: /health
     envVars:

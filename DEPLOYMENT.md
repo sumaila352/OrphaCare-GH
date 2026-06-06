@@ -147,7 +147,7 @@ Ensure the repo is on GitHub (e.g. `sumaila352/OrphaCare-GH`). Both Render and V
 | **Branch** | `main` |
 | **Root Directory** | *(leave empty — repo root)* |
 | **Runtime** | Node |
-| **Build Command** | `npm install && npm run build:production -w apps/api` |
+| **Build Command** | `npm install --include=dev && npm run build:production -w apps/api` |
 | **Start Command** | `npm run start -w apps/api` |
 | **Health Check Path** | `/health` |
 
@@ -171,6 +171,8 @@ Ensure the repo is on GitHub (e.g. `sumaila352/OrphaCare-GH`). Both Render and V
 | `SEED_ADMIN_PASSWORD` | Strong password (remove after seed) |
 
 Render sets `PORT` automatically — do not override unless you know why.
+
+**Build note:** Because `NODE_ENV=production` is set on Render, a plain `npm install` skips `devDependencies` (`typescript`, `prisma`, `@types/*`) and `tsc` fails. Always use `npm install --include=dev` in the **Build Command** (not needed at runtime).
 
 4. Deploy and wait for build to finish. Open `https://YOUR-SERVICE.onrender.com/health` — expect `{"ok":true,"db":"up"}`.
 
@@ -199,10 +201,12 @@ Or set `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` in Render env temporarily, run
 
 | Setting | Value |
 |---------|--------|
-| **Framework Preset** | Next.js |
-| **Root Directory** | `apps/web` |
-| **Build Command** | *(default)* `next build` |
-| **Output** | *(default)* |
+| **Framework Preset** | Next.js *(auto-detected after root dir is set)* |
+| **Root Directory** | **`apps/web`** — click **Edit**, type `apps/web`, confirm |
+| **Build Command** | *(default)* leave empty or `next build` |
+| **Output** | *(default)* leave empty |
+
+**Important:** If you see *“No Next.js version detected”*, Root Directory is wrong. It must be `apps/web`, not the repo root.
 
 3. **Environment Variables** (Production + Preview recommended):
 
