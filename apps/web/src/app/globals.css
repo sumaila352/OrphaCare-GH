@@ -1,5 +1,6 @@
 @import './themes.css';
 @import './public.css';
+@import './donor.css';
 
 :root {
   --app-touch-min: 44px;

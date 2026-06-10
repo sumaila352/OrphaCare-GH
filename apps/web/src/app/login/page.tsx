@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, useState, Suspense } from 'react';
 import { PublicLayout } from '@/components/PublicLayout';
 import { ContinueWithGoogle } from '@/components/ContinueWithGoogle';
+import { PasswordField } from '@/components/PasswordField';
 import { login } from '@/lib/api';
 import { homePathForUser } from '@/lib/auth';
 
@@ -53,10 +54,7 @@ function LoginForm() {
               <label className="form-label">Email</label>
               <input className="form-control" type="email" name="email" required disabled={loading} />
             </div>
-            <div>
-              <label className="form-label">Password</label>
-              <input className="form-control" type="password" name="password" required disabled={loading} />
-            </div>
+            <PasswordField name="password" label="Password" required disabled={loading} autoComplete="current-password" />
             <button className="btn-oc-primary w-100 border-0" type="submit" disabled={loading} style={{ width: '100%' }}>
               {loading ? 'Signing in…' : 'Login with email'}
             </button>

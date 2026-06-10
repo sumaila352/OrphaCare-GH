@@ -71,6 +71,11 @@ export async function api<T>(path: string, options: RequestInit = {}): Promise<T
       },
     });
   } catch {
+    if (typeof window !== 'undefined' && !API_URL) {
+      throw new Error(
+        'API URL is not configured. Set NEXT_PUBLIC_API_URL to your Render API URL in Vercel and redeploy.',
+      );
+    }
     throw new Error(
       'Cannot reach the server. Run npm run dev from the project root and ensure the API is on port 4000.',
     );

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, Suspense, useState } from 'react';
 import { ContinueWithGoogle } from '@/components/ContinueWithGoogle';
+import { PasswordField } from '@/components/PasswordField';
 import { PublicLayout } from '@/components/PublicLayout';
 import { register } from '@/lib/api';
 import { homePathForUser } from '@/lib/auth';
@@ -68,31 +69,23 @@ function RegisterForm() {
               <label className="form-label">Email</label>
               <input className="form-control" type="email" name="email" required disabled={loading} />
             </div>
-            <div>
-              <label className="form-label">Password</label>
-              <input
-                className="form-control"
-                type="password"
-                name="password"
-                minLength={8}
-                autoComplete="new-password"
-                required
-                disabled={loading}
-              />
-              <div className="form-text">At least 8 characters</div>
-            </div>
-            <div>
-              <label className="form-label">Confirm password</label>
-              <input
-                className="form-control"
-                type="password"
-                name="confirmPassword"
-                minLength={8}
-                autoComplete="new-password"
-                required
-                disabled={loading}
-              />
-            </div>
+            <PasswordField
+              name="password"
+              label="Password"
+              minLength={8}
+              autoComplete="new-password"
+              required
+              disabled={loading}
+              hint="At least 8 characters"
+            />
+            <PasswordField
+              name="confirmPassword"
+              label="Confirm password"
+              minLength={8}
+              autoComplete="new-password"
+              required
+              disabled={loading}
+            />
             <button className="btn-oc-primary w-100 border-0" type="submit" disabled={loading} style={{ width: '100%' }}>
               {loading ? 'Creating…' : 'Register with email'}
             </button>

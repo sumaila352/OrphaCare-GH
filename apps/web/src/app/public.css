@@ -905,6 +905,123 @@
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.95%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2.25' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
+/* Mobile offcanvas menu — always solid (fixes transparent menu over hero) */
+.public-site .public-offcanvas {
+  background: var(--oc-cream);
+  color: var(--oc-ink);
+  width: min(320px, 88vw);
+}
+
+.public-site .public-offcanvas .offcanvas-header {
+  border-color: rgba(15, 76, 69, 0.1) !important;
+}
+
+.public-site .public-offcanvas .offcanvas-title {
+  font-family: var(--font-display);
+  color: var(--oc-teal);
+}
+
+.public-site .public-offcanvas .nav-link {
+  color: var(--oc-muted);
+  padding: 0.65rem 0.85rem !important;
+  border-radius: 12px;
+}
+
+.public-site .public-offcanvas .nav-link:hover,
+.public-site .public-offcanvas .nav-link.active {
+  color: var(--oc-teal);
+  background: rgba(15, 76, 69, 0.08);
+}
+
+.public-site .public-offcanvas .header-actions {
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+.public-site .public-offcanvas .header-actions .btn-oc-nav {
+  width: 100%;
+  min-height: 44px;
+  justify-content: center;
+}
+
+[data-theme='dark'] .public-site .public-offcanvas {
+  background: #151b26;
+  color: #f2f5fa;
+}
+
+[data-theme='dark'] .public-site .public-offcanvas .offcanvas-header {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme='dark'] .public-site .public-offcanvas .offcanvas-title {
+  color: #3db89a;
+}
+
+[data-theme='dark'] .public-site .public-offcanvas .nav-link {
+  color: #d1dae6;
+}
+
+[data-theme='dark'] .public-site .public-offcanvas .nav-link:hover,
+[data-theme='dark'] .public-site .public-offcanvas .nav-link.active {
+  color: #3db89a;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Password show/hide toggle */
+.password-input-wrap {
+  position: relative;
+}
+
+.password-input-wrap .form-control {
+  padding-right: 2.75rem;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 0.35rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: var(--oc-text-muted, #5f6e68);
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+}
+
+.password-toggle-btn:hover:not(:disabled) {
+  background: rgba(15, 76, 69, 0.08);
+  color: var(--oc-primary, #0b5ed7);
+}
+
+.password-toggle-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+[data-theme='dark'] .password-toggle-btn {
+  color: var(--oc-text-muted);
+}
+
+[data-theme='dark'] .password-toggle-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--oc-primary);
+}
+
+.public-site .password-toggle-btn {
+  color: var(--oc-muted);
+}
+
+.public-site .password-toggle-btn:hover:not(:disabled) {
+  color: var(--oc-teal);
+  background: rgba(15, 76, 69, 0.08);
+}
+
 [data-theme='dark'] .public-site .site-header--solid .navbar-brand,
 [data-theme='dark'] .public-site .site-header:not(.site-header--hero) .navbar-brand {
   color: var(--oc-teal-light, #3db89a);
